@@ -66,22 +66,27 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemMarca() {		
+		loadView("/gui/MarcaList.fxml");
 	}
 	
 	@FXML
 	public void onMenuItemSetor() {		
+		loadView("/gui/SetorList.fxml");
 	}
 	
 	@FXML
 	public void onMenuItemSubSetor() {		
+		loadView("/gui/SubSetorList.fxml");
 	}
 	
 	@FXML
 	public void onMenuItemCategoria() {		
+		loadView("/gui/CategoriaList.fxml");
 	}
 	
 	@FXML
 	public void onMenuItemSubCategoria() {		
+		loadView("/gui/SubCategoriaList.fxml");
 	}
 	
 	@FXML

@@ -23,9 +23,9 @@
                     <items>
                         <MenuItem fx:id="menuItemMarca" mnemonicParsing="false" onAction="#onMenuItemMarca" text="Marca" />
                         <MenuItem fx:id="menuItemSetor" mnemonicParsing="false" onAction="#onMenuItemSetor" text="Setor" />
-                        <MenuItem fx:id="menuItemSubSetor" mnemonicParsing="false" onAction="#onMenuItemSubSetor" text="Sub-Setor" />
+                        <MenuItem fx:id="menuItemSubSetor" mnemonicParsing="false" onAction="#onMenuItemSubSetor" text="Subsetor" />
                         <MenuItem fx:id="menuItemCategoria" mnemonicParsing="false" onAction="#onMenuItemCategoria" text="Categoria" />
-                        <MenuItem fx:id="menuItemSubCategoria" mnemonicParsing="false" onAction="#onMenuItemSubCategoria" text="Sub-Categoria" />
+                        <MenuItem fx:id="menuItemSubCategoria" mnemonicParsing="false" onAction="#onMenuItemSubCategoria" text="Subcategoria" />
                         <MenuItem fx:id="menuItemProduto" mnemonicParsing="false" onAction="#onMenuItemProduto" text="Produto" />
                         <MenuItem fx:id="menuItemServico" mnemonicParsing="false" onAction="#onMenuItemServico" text="Serviço" />
                     </items>
