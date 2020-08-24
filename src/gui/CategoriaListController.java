@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,9 +15,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.entities.Categoria;
+import model.services.CategoriaService;
 
 public class CategoriaListController implements Initializable {
 
+	private CategoriaService service;
+	
 	@FXML
 	private TableView<Categoria> tableViewCategoria;
 	
@@ -27,9 +33,15 @@ public class CategoriaListController implements Initializable {
 	@FXML
 	private Button btNovoCategoria;
 	
+	private ObservableList<Categoria> obsList;
+	
 	@FXML
 	private void onBtNovoCategoriaAction() {
 		System.out.println("onBtNovoCategoriaAction");
+	}
+	
+	public void setCategoriaService(CategoriaService service) {
+		this.service = service;
 	}
 	
 	@Override
@@ -43,5 +55,14 @@ public class CategoriaListController implements Initializable {
 
 		Stage  stage = (Stage) Main.getMainScene().getWindow();
 		tableViewCategoria.prefHeightProperty().bind(stage.heightProperty());
+	}
+	
+	public void updateTableView() {
+		if (service == null) {
+			throw new IllegalStateException("Serviço está vazio");
+		}
+		List<Categoria> list = service.findAll();
+		obsList = FXCollections.observableArrayList(list);
+		tableViewCategoria.setItems(obsList);
 	}
 }
