@@ -9,8 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.entities.Marca;
 
 public class MarcaFormController implements Initializable {
+	
+	private Marca entity;
 
 	@FXML
 	private TextField txtId;
@@ -26,6 +29,10 @@ public class MarcaFormController implements Initializable {
 	
 	@FXML
 	private Button btCancel;
+	
+	public void setMarca(Marca entity) {
+		this.entity = entity;
+	}
 	
 	@FXML
 	public void onBtSaveAction() {
@@ -45,5 +52,13 @@ public class MarcaFormController implements Initializable {
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
 		Constraints.setTextFieldMaxLength(txtNome, 30);
+	}
+	
+	public void updateFormData() {
+		if (entity == null) {
+			throw new IllegalStateException("Entity was null");
+		}
+		txtId.setText(String.valueOf(entity.getId()));
+		txtNome.setText(entity.getNome());
 	}
 }
