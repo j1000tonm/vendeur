@@ -84,6 +84,7 @@ public class MarcaListController implements Initializable {
 			
 			MarcaFormController controller = loader.getController();
 			controller.setMarca(obj);
+			controller.setMarcaService(new MarcaService());
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
