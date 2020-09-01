@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Marca;
 import model.services.MarcaService;
 
-public class MarcaListController implements Initializable {
+public class MarcaListController implements Initializable, DataChangeListener {
 
 	private MarcaService service;
 	
@@ -85,6 +86,7 @@ public class MarcaListController implements Initializable {
 			MarcaFormController controller = loader.getController();
 			controller.setMarca(obj);
 			controller.setMarcaService(new MarcaService());
+			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
@@ -98,5 +100,10 @@ public class MarcaListController implements Initializable {
 		catch (IOException e) {
 			Alerts.showAlert("IO Exceção", "Erro carregando tela", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChanged() {
+		updateTableView();
 	}
 }
