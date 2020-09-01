@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -70,6 +72,9 @@ public class MarcaFormController implements Initializable {
 			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
 		}
+		catch (ValidationException e) {
+			setErrorMessages(e.getErrors());
+		}
 		catch (DbException e) {
 			Alerts.showAlert("Erro salvando objeto", null, e.getMessage(), AlertType.ERROR);
 		}
@@ -92,7 +97,7 @@ public class MarcaFormController implements Initializable {
 		}
 
 		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
-			exception.addError("nome", "Campo não pode ser vazio");
+			exception.addError("nome", " Campo não pode ser vazio");
 		}
 		
 		obj.setNome(txtNome.getText());
@@ -124,5 +129,13 @@ public class MarcaFormController implements Initializable {
 		}
 		txtId.setText(String.valueOf(entity.getId()));
 		txtNome.setText(entity.getNome());
+	}
+	
+	private void setErrorMessages(Map<String, String> errors) {
+		Set<String> fields = errors.keySet();
+		
+		if (fields.contains("nome")) {
+			labelErrorNome.setText(errors.get("nome"));
+		}
 	}
 }
