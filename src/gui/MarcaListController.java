@@ -9,6 +9,7 @@ import application.Main;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,32 +32,35 @@ import model.services.MarcaService;
 public class MarcaListController implements Initializable, DataChangeListener {
 
 	private MarcaService service;
-	
+
 	@FXML
 	private TableView<Marca> tableViewMarca;
-	
+
 	@FXML
 	private TableColumn<Marca, Long> tableColumnId;
-	
+
 	@FXML
 	private TableColumn<Marca, String> tableColumnNome;
-	
+
+	@FXML
+	private TableColumn<Marca, Marca> tableColumnEDIT;
+
 	@FXML
 	private Button btNovoMarca;
-	
+
 	private ObservableList<Marca> obsList;
-	
+
 	@FXML
 	private void onBtNovoMarcaAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Marca obj = new Marca();
 		createDialogForm(obj, "/gui/MarcaForm.fxml", parentStage);
 	}
-	
+
 	public void setMarcaService(MarcaService service) {
 		this.service = service;
 	}
-	
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializeNodes();
@@ -65,10 +70,10 @@ public class MarcaListController implements Initializable, DataChangeListener {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 
-		Stage  stage = (Stage) Main.getMainScene().getWindow();
+		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewMarca.prefHeightProperty().bind(stage.heightProperty());
 	}
-	
+
 	public void updateTableView() {
 		if (service == null) {
 			throw new IllegalStateException("Serviço está vazio");
@@ -76,19 +81,20 @@ public class MarcaListController implements Initializable, DataChangeListener {
 		List<Marca> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewMarca.setItems(obsList);
+		initEditButtons();
 	}
-	
+
 	private void createDialogForm(Marca obj, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
-			
+
 			MarcaFormController controller = loader.getController();
 			controller.setMarca(obj);
 			controller.setMarcaService(new MarcaService());
 			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
-			
+
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Entre dados Marca");
 			dialogStage.setScene(new Scene(pane));
@@ -96,8 +102,7 @@ public class MarcaListController implements Initializable, DataChangeListener {
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			Alerts.showAlert("IO Exceção", "Erro carregando tela", e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -106,4 +111,24 @@ public class MarcaListController implements Initializable, DataChangeListener {
 	public void onDataChanged() {
 		updateTableView();
 	}
+
+	private void initEditButtons() {
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Marca, Marca>() {
+			private final Button button = new Button("edit");
+
+			@Override
+			protected void updateItem(Marca obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(
+						event -> createDialogForm(obj, "/gui/MarcaForm.fxml", Utils.currentStage(event)));
+			}
+		});
+	}
+
 }
