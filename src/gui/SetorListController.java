@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Setor;
 import model.services.SetorService;
@@ -36,8 +45,10 @@ public class SetorListController implements Initializable {
 	private ObservableList<Setor> obsList;
 	
 	@FXML
-	private void onBtNovoSetorAction() {
-		System.out.println("onBtNovoSetorAction");
+	private void onBtNovoSetorAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);
+		Setor obj = new Setor();
+		createDialogForm(obj, "/gui/SetorForm.fxml", parentStage);
 	}
 	
 	public void setSetorService(SetorService service) {
@@ -64,5 +75,28 @@ public class SetorListController implements Initializable {
 		List<Setor> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewSetor.setItems(obsList);
+	}
+	
+	private void createDialogForm(Setor obj, String absoluteName, Stage parentStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			SetorFormController controller = loader.getController();
+			controller.setSetor(obj);
+			controller.setSetorService(new SetorService());
+			controller.updateFormData();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Entre dados setor");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+		}
+		catch (IOException e) {
+			Alerts.showAlert("IO exceção", "Erro carregando tela", e.getMessage(), AlertType.ERROR);
+		}
 	}
 }
