@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Setor;
 import model.services.SetorService;
 
-public class SetorListController implements Initializable {
+public class SetorListController implements Initializable, DataChangeListener {
 
 	private SetorService service;
 
@@ -85,6 +86,7 @@ public class SetorListController implements Initializable {
 			SetorFormController controller = loader.getController();
 			controller.setSetor(obj);
 			controller.setSetorService(new SetorService());
+			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
@@ -98,5 +100,10 @@ public class SetorListController implements Initializable {
 		catch (IOException e) {
 			Alerts.showAlert("IO exceção", "Erro carregando tela", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChanged() {
+		updateTableView();
 	}
 }
